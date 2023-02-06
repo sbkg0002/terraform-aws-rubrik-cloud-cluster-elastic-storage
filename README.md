@@ -6,10 +6,10 @@ Terraform module which deploys a new Rubrik Cloud Cluster in AWS.
 
 ## Documentation
 
-Here are some resources to get you started! If you find any challenges from this project are not properly documented or are unclear, please [raise an issue](https://github.com/rubrikinc/terraform-aws-rubrik-cloud-cluster/issues/new/choose) and let us know! This is a fun, safe environment - don't worry if you're a GitHub newbie!
+Here are some resources to get you started! If you find any challenges from this project are not properly documented or are unclear, please [raise an issue](../../issues/new/choose) and let us know! This is a fun, safe environment - don't worry if you're a GitHub newbie!
 
 - [Terraform Module Registry](https://registry.terraform.io/modules/rubrikinc/rubrik-cloud-cluster)
-- [Quick Start Guide](https://github.com/rubrikinc/terraform-aws-rubrik-cloud-cluster/blob/master/docs/quick-start.md)
+- [Quick Start Guide](docs/quick-start.md)
 
 ### Usage
 
@@ -25,6 +25,8 @@ module "rubrik_aws_cloud_cluster" {
   admin_password              = "RubrikGoForward"
   dns_search_domain          = ["rubrikdemo.com"]
   dns_name_servers           = ["192.168.100.5"."192.168.100.6"]
+  ntp_server1_name            = "8.8.8.8"
+  ntp_server2_name            = "8.8.4.4"
 }
 ```
 
@@ -113,7 +115,7 @@ The following are the variables accepted by the module.
 There are a few services you'll need in order to get this project off the ground:
 
 - [Terraform](https://www.terraform.io/downloads.html) v1.2.2 or greater
-- [Rubrik Provider for Terraform](https://github.com/rubrikinc/rubrik-provider-for-terraform) - provides Terraform functions for Rubrik
+- [Rubrik Provider for Terraform](https://github.com/rubrikinc/terraform-provider-rubrik) - provides Terraform functions for Rubrik
   - Only required to run the sample Rubrik Bootstrap command
 - The Rubik Cloud Cluster product in the AWS Marketplace must be subscribed to. Otherwise an error like this will be displayed:
   > Error: creating EC2 Instance: OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe. To do so please visit https://aws.amazon.com/marketplace/pp?sku=<sku_number>
