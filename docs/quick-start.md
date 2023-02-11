@@ -273,3 +273,60 @@ The Rubik product in the AWS Marketplace must be subscribed to. Otherwise an err
 
 If this occurs, open the specific link from the error, while logged into the AWS account where Cloud Cluster will be deployed. Follow the instructions for subscribing to the product.
 For AWS GovCloud the link points to the public marketplace. Instead of following the link, launch one instance of the major version of Rubrik from the AWS console. This will accept the terms and subscribe to the subscription. Remove the manually launched instance and then run the Terraform again.
+
+### Instance Metadata Service Version 2 (IMDSv2) not supported
+
+The AWS Instance Metadata Service Version 2 (IMDSv2) is not supported at this time with CCES. If after deploying the CCES node, SSH fails to login or bootstrapping the node fails. When trying to ssh to the node the following error may occur:
+
+```
+admin@<node_ip_address>: Permission denied (publickey).
+```
+
+When trying to bootstrap the cluster the following error may occur in Terraform:
+
+```
+rubrik_bootstrap_cces_aws.bootstrap_rubrik_cces_aws: Creating...
+╷
+│ Error: Error with cluster configuration parameters :  Error Failed to check cloud storage connectivity:
+│ /0:0:0:0:0:0:0:1:
+│ GENERIC Excepshun (InternalErrorCode(NullInternalErrorCode,)): "Check failed: \"\" != FLAGS_region ( vs. ) "}
+│ *** Check failure stack trace: ***
+│     @     0x7f55c52601c3  google::LogMessage::Fail()
+│     @     0x7f55c526525b  google::LogMessage::SendToLog()
+│     @     0x7f55c525febf  google::LogMessage::Flush()
+│     @     0x7f55c52606ef  google::LogMessageFatal::~LogMessageFatal()
+│     @     0x561bcdefac81  GetSpec()
+│     @     0x561bcdeeb241  main
+│     @     0x7f55c4a74083  __libc_start_main
+│     @     0x561bcdef667e  _start in performBootstrap
+│ 
+│   with rubrik_bootstrap_cces_aws.bootstrap_rubrik_cces_aws,
+│   on main.tf line 230, in resource "rubrik_bootstrap_cces_aws" "bootstrap_rubrik_cces_aws":
+│  230: resource "rubrik_bootstrap_cces_aws" "bootstrap_rubrik_cces_aws" {
+│ 
+╵
+```
+
+Checking the bootstrap status using the REST API endpoint with a command such as `curl -X GET "https://<node_ip_address>/api/internal/cluster/me/bootstrap" -H "accept: application/json"` gives the error:
+
+```json
+
+  "status": "FAILURE",
+  "message": "Error with cluster configuration parameters :  Error Failed to check cloud storage connectivity:\n/0:0:0:0:0:0:0:1:\nGENERIC Excepshun (InternalErrorCode(NullInternalErrorCode,)): \"Check failed: \\\"\\\" != FLAGS_region ( vs. ) \"}\n*** Check failure stack trace: ***\n    @     0x7f55c52601c3  google::LogMessage::Fail()\n    @     0x7f55c526525b  google::LogMessage::SendToLog()\n    @     0x7f55c525febf  google::LogMessage::Flush()\n    @     0x7f55c52606ef  google::LogMessageFatal::~LogMessageFatal()\n    @     0x561bcdefac81  GetSpec()\n    @     0x561bcdeeb241  main\n    @     0x7f55c4a74083  __libc_start_main\n    @     0x561bcdef667e  _start in performBootstrap",
+  "ipConfig": "NOT_STARTED",
+  "metadataSetup": "NOT_STARTED",
+  "installSchema": "NOT_STARTED",
+  "startServices": "NOT_STARTED",
+  "ipmiConfig": "NOT_STARTED",
+  "configAdminUser": "NOT_STARTED",
+  "resetNodes": "NOT_STARTED",
+  "setupDisks": "NOT_STARTED",
+  "setupEncryptionAtRest": "NOT_STARTED",
+  "setupOsAndMetadataPartitions": "NOT_STARTED",
+  "createTopLevelFilesystemDirs": "NOT_STARTED",
+  "setupLoopDevices": "NOT_STARTED",
+  "clusterInstall": "NOT_STARTED"
+}
+```
+
+If any of these errors occur, the Instance Metadata Service Version 2 (IMDSv2) may be enabled. This can happen if the Terraform `aws_instance` module has the `metadata_options` variable `http_tokens` set to `required`. To fix this remove the `http_tokens` variable.
