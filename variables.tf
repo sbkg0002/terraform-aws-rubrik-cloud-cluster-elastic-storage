@@ -122,6 +122,13 @@ variable "s3_bucket_name" {
   type        = string
   default     = ""
 }
+
+variable "s3_bucket_force_destroy" {
+  description = "A boolean that indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error."
+  type        = bool
+  default     = false
+}
+
 # Bootstrap Settings
 variable "cluster_name" {
   description = "Unique name to assign to the Rubrik Cloud Cluster. This will also be used to populate the EC2 instance name tag. For example, rubrik-cloud-cluster-1, rubrik-cloud-cluster-2 etc."

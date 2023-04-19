@@ -175,9 +175,9 @@ module "s3_vpc_endpoint" {
 ###########################
 
 resource "aws_s3_bucket" "cces-s3-bucket" {
-  bucket = var.s3_bucket_name == "" ? "${var.cluster_name}.bucket-do-not-delete" : var.s3_bucket_name
-
-  tags = var.aws_tags
+  bucket        = var.s3_bucket_name == "" ? "${var.cluster_name}.bucket-do-not-delete" : var.s3_bucket_name
+  force_destroy = var.s3_bucket_force_destroy
+  tags          = var.aws_tags
 }
 
 resource "aws_s3_bucket_public_access_block" "cces-s3-bucket-public-access" {
