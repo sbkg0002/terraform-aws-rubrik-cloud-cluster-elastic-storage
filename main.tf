@@ -171,16 +171,15 @@ module "s3_vpc_endpoint" {
 ###########################
 
 resource "aws_s3_bucket" "cces-s3-bucket" {
-  bucket = var.s3_bucket_name == "" ? "${var.cluster_name}.bucket-do-not-delete" : var.s3_bucket_name
-
+  bucket              = var.s3_bucket_name == "" ? "${var.cluster_name}.bucket-do-not-delete" : var.s3_bucket_name
+  force_destroy       = var.s3_bucket_force_destroy
   object_lock_enabled = var.enableImmutability
-
-  tags = var.aws_tags
+  tags                = var.aws_tags
 }
 
 resource "aws_s3_bucket_versioning" "cces-s3-bucket-versioning" {
-  count = local.enableImmutability
-  bucket = aws_s3_bucket.cces-s3-bucket.id
+  count   = local.enableImmutability
+  bucket  = aws_s3_bucket.cces-s3-bucket.id
   versioning_configuration {
     status = "Enabled"
   }
