@@ -63,7 +63,6 @@ module "this" {
   ]
 
   tags = merge(
-    var.tags,
-    { "sg:purpose" = "rubrik-cluster-to-self" }
+    var.tags
   )
 }
