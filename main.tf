@@ -6,6 +6,7 @@ locals {
   ami_id = var.aws_image_id == "" || var.aws_image_id == "latest" ? data.aws_ami_ids.rubrik_cloud_cluster.ids[0] : var.aws_image_id
   sg_ids = var.aws_cloud_cluster_nodes_sg_ids == "" ? [module.rubrik_nodes_sg.security_group_id] : concat(var.aws_cloud_cluster_nodes_sg_ids, [module.rubrik_nodes_sg.security_group_id])
   instance_type           = var.aws_instance_type
+  enableImmutability = var.enableImmutability ? 1 : 0
   cluster_node_config = {
     "instance_type"           = var.aws_instance_type,
     "ami_id"                  = local.ami_id,
@@ -147,6 +148,7 @@ module "iam_role" {
   role_name             = var.aws_cloud_cluster_iam_role_name == "" ? "${var.cluster_name}.role" : var.aws_cloud_cluster_iam_role_name
   role_policy_name      = var.aws_cloud_cluster_iam_role_policy_name == "" ? "${var.cluster_name}.role-policy" : var.aws_cloud_cluster_iam_role_policy_name
   instance_profile_name = var.aws_cloud_cluster_ec2_instance_profile_name == "" ? "${var.cluster_name}.instance-profile" : var.aws_cloud_cluster_ec2_instance_profile_name
+  enableImmutability    = var.enableImmutability
 }
 
 ########################################
@@ -171,7 +173,18 @@ module "s3_vpc_endpoint" {
 resource "aws_s3_bucket" "cces-s3-bucket" {
   bucket = var.s3_bucket_name == "" ? "${var.cluster_name}.bucket-do-not-delete" : var.s3_bucket_name
 
+  object_lock_enabled = var.enableImmutability
+
   tags = var.aws_tags
+}
+
+resource "aws_s3_bucket_versioning" "cces-s3-bucket-versioning" {
+  count = local.enableImmutability
+  bucket = aws_s3_bucket.cces-s3-bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+
 }
 
 resource "aws_s3_bucket_public_access_block" "cces-s3-bucket-public-access" {
@@ -181,11 +194,6 @@ resource "aws_s3_bucket_public_access_block" "cces-s3-bucket-public-access" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-resource aws_s3_bucket_acl "cces-s3-bucket-acl" {
-  bucket = aws_s3_bucket.cces-s3-bucket.id
-  acl    = "private"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "cces-s3-bucket-encryption" {
@@ -231,12 +239,13 @@ resource "rubrik_bootstrap_cces_aws" "bootstrap_rubrik_cces_aws" {
   dns_name_servers        = "${var.dns_name_servers}"
   ntp_server1_name        = "${var.ntp_server1_name}"
   ntp_server2_name        = "${var.ntp_server2_name}"
- 
+
   enable_encryption       = false
   bucket_name             = var.s3_bucket_name == "" ? "${var.cluster_name}.bucket-do-not-delete" : var.s3_bucket_name
+  enable_immutability     = var.enableImmutability
 
-  node_config = "${zipmap(local.cluster_node_names, local.cluster_node_ips)}"
-  timeout     = "${var.timeout}"
+  node_config             = "${zipmap(local.cluster_node_names, local.cluster_node_ips)}"
+  timeout                 = "${var.timeout}"
 
-  depends_on = [time_sleep.wait_for_nodes_to_boot]
+  depends_on              = [time_sleep.wait_for_nodes_to_boot]
 }

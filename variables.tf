@@ -122,6 +122,13 @@ variable "s3_bucket_name" {
   type        = string
   default     = ""
 }
+
+variable "enableImmutability" {
+  description = "Enables object lock and versioning on the S3 bucket. Sets the object lock flag during bootstrap. Not supported on CDM v8.0.1 and earlier."
+  type        = bool
+  default     = true
+}
+
 # Bootstrap Settings
 variable "cluster_name" {
   description = "Unique name to assign to the Rubrik Cloud Cluster. This will also be used to populate the EC2 instance name tag. For example, rubrik-cloud-cluster-1, rubrik-cloud-cluster-2 etc."

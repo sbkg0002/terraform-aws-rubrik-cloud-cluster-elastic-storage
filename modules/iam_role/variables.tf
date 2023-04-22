@@ -18,3 +18,7 @@ variable "tags" {
     type = map(string)
     default = {  }
 }
+
+variable "enableImmutability" {
+  type = bool
+}
