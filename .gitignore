@@ -4,3 +4,5 @@
 *.tfvars
 *.tfvars.*
 *.*~
+*.out
+*.py
