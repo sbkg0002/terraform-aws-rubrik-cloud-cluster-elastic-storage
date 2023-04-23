@@ -127,6 +127,7 @@ variable "enableImmutability" {
   description = "Enables object lock and versioning on the S3 bucket. Sets the object lock flag during bootstrap. Not supported on CDM v8.0.1 and earlier."
   type        = bool
   default     = true
+}
 
 variable "s3_bucket_force_destroy" {
   description = "A boolean that indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error."
