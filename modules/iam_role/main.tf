@@ -81,6 +81,7 @@ resource "aws_iam_role_policy" "rubrik_ec2_s3_policy" {
   name   = var.role_policy_name
   role   = aws_iam_role.rubrik_ec2_s3.name
   policy = local.iam_policy
+}
 
 resource "aws_iam_instance_profile" "rubrik_ec2_s3_profile" {
   name  = var.instance_profile_name
