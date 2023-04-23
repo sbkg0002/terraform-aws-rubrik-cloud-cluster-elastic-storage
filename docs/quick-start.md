@@ -85,6 +85,7 @@ The following are the variables accepted by the module.
 | create_s3_bucket                                | If true, create am S3 bucket for Cloud Cluster ES data storage.                                                          |  bool  |           true             |    no    |
 | s3_bucket_name                                  | Name of the S3 bucket to use with Cloud Cluster ES data storage. If blank a name will be auto generated.                 | string |                            |    no    |
 | s3_bucket_force_destroy                         | Indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error.               |  bool  |           false            |    no    |
+| enable_immutability                             | Enable immutability on the S3 objects that CCES uses. Default value is false.                                            |  bool  |           false            |    no    |
 | create_s3_vpc_endpoint                          | If true, create a VPC Endpoint and S3 Endpoint Service for Cloud Cluster ES.                                             |  bool  |           true             |    no    |
 
 ### Bootstrap Settings
