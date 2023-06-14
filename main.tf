@@ -7,6 +7,7 @@ locals {
   sg_ids = var.aws_cloud_cluster_nodes_sg_ids == "" ? [module.rubrik_nodes_sg.security_group_id] : concat(var.aws_cloud_cluster_nodes_sg_ids, [module.rubrik_nodes_sg.security_group_id])
   instance_type           = var.aws_instance_type
   enableImmutability = var.enableImmutability ? 1 : 0
+  ebs_throughput = (var.cluster_disk_type == "gp3" ? 250 : null)   
   cluster_node_config = {
     "instance_type"           = var.aws_instance_type,
     "ami_id"                  = local.ami_id,
@@ -17,16 +18,19 @@ locals {
     "iam_instance_profile"    = var.aws_cloud_cluster_ec2_instance_profile_name == "" ? "${var.cluster_name}.instance-profile" : var.aws_cloud_cluster_ec2_instance_profile_name,
     "availability_zone"       = data.aws_subnet.rubrik_cloud_cluster.availability_zone,
     "tags"                    = var.aws_tags
+    "root_volume_type"        = var.cluster_disk_type
+    "root_volume_throughput"  = local.ebs_throughput
   }
 
   cluster_node_ips = [for i in module.cluster_nodes.instances : i.private_ip]
   cluster_disks = {
     for v in setproduct(local.cluster_node_names, range(var.cluster_disk_count)) :
     "${v[0]}-sd${substr("bcdefghi", v[1], 1)}" => {
-      "instance" = v[0],
-      "device"   = "/dev/sd${substr("bcdefghi", v[1], 1)}"
-      "size"     = var.cluster_disk_size
-      "type"     = var.cluster_disk_type
+      "instance"   = v[0],
+      "device"     = "/dev/sd${substr("bcdefghi", v[1], 1)}"
+      "size"       = var.cluster_disk_size
+      "type"       = var.cluster_disk_type
+      "throughput" = local.ebs_throughput
     }
   }
 }

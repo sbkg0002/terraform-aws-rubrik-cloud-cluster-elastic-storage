@@ -87,7 +87,7 @@ The following are the variables accepted by the module.
 
 | Name                                            | Description                                                                                                              |  Type  |          Default           | Required |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | :----: | :------------------------: | :------: |
-| cluster_disk_type                               | Disk type for the data disks (st1, sc1 or gp2). Use gp2 for CC-ES. Use sc1 for 48TB CC nodes. Use st1 for all others.    | string |            gp2             |    no    |
+| cluster_disk_type                               | Disk type for the data disks (gp2 or gp3).    | string |            gp2             |    no    |
 | cluster_disk_size                               | The size (in GB) of each data disk on each node. Cloud Cluster ES only requires 1 512 GB disk per node.                  | string |            512             |    no    |
 | cluster_disk_count                              | The number of disks for each node in the cluster. Set to 1 to use with S3 storage for Cloud Cluster ES.                  |  int   |             1              |    no    |
 

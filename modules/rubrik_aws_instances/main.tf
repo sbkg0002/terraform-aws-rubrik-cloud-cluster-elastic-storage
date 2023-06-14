@@ -29,6 +29,8 @@ resource "aws_instance" "rubrik_cluster" {
   iam_instance_profile    = var.node_config.iam_instance_profile
   root_block_device {
     encrypted = true
+    volume_type = var.node_config.root_volume_type
+    throughput = var.node_config.root_volume_throughput
     tags = {Name = "${each.value}-sda"}
   }
   dynamic "ebs_block_device"{
@@ -36,6 +38,7 @@ resource "aws_instance" "rubrik_cluster" {
     content {
       volume_type = ebs_block_device.value.type
       volume_size = ebs_block_device.value.size
+      throughput  = ebs_block_device.value.throughput
       tags        =  merge(
                           {Name = each.key},
                           var.node_config.tags      
