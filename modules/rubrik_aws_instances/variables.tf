@@ -12,6 +12,8 @@ variable "node_config" {
     disable_api_termination = bool
     iam_instance_profile = string
     availability_zone = string
+    root_volume_type = string
+    root_volume_throughput = number
     tags = map(string)
   })
 }
