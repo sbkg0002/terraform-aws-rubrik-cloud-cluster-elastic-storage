@@ -83,7 +83,7 @@ variable "aws_subnet_id" {
 
 variable "cluster_disk_type" {
   description = "Disk type for the cache disk: gp2, gp3. Note gp3 only supported for CC-ES from Rubrik 8.1.1."
-  default     = "gp2"
+  default     = "gp3"
 }
 
 variable "cluster_disk_size" {
