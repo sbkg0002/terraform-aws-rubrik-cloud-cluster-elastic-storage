@@ -100,13 +100,13 @@ variable "cluster_disk_count" {
 # Cloud Cluster ES Settings
 
 variable "aws_cloud_cluster_iam_role_name" {
-  description = "AWS IAM Role name for Cloud Cluster ES. If blank a name will be auto generated. Required if create_iam_role is false."
+  description = "AWS IAM Role name for Cloud Cluster ES. If blank a name will be auto generated."
   type        = string
   default     = ""
 }
 
 variable "aws_cloud_cluster_iam_role_policy_name" {
-  description = "AWS IAM Role policy name for Cloud Cluster ES if create_iam_role is true. If blank a name will be auto generated."
+  description = "AWS IAM Role policy name for Cloud Cluster ES. If blank a name will be auto generated."
   type        = string
   default     = ""
 }
