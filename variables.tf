@@ -1,15 +1,18 @@
 # Instance/Node Settings
 variable "aws_region" {
   description = "The region to deploy Rubrik Cloud Cluster nodes."
+  type        = string
 }
 
 variable "aws_instance_type" {
   description = "The type of instance to use as Rubrik Cloud Cluster nodes. CC-ES requires m5.4xlarge."
+  type        = string
   default     = "m5.4xlarge"
 }
 
 variable "aws_disable_api_termination" {
   description = "If true, enables EC2 Instance Termination Protection on the Rubrik Cloud Cluster nodes."
+  type        = bool
   default     = true
 }
 
@@ -21,6 +24,7 @@ variable "aws_tags" {
 
 variable "number_of_nodes" {
   description = "The total number of nodes in Rubrik Cloud Cluster."
+  type        = number
   default     = 3
 }
 
@@ -49,12 +53,14 @@ variable "aws_key_pair_name" {
 
 variable "private_key_recovery_window_in_days" {
   description = "Recovery window in days to recover script generated ssh private key."
+  type        = number
   default     = 30
 }
 
 # Network Settings
 variable "aws_vpc_cloud_cluster_nodes_sg_name" {
   description = "The name of the security group to create for Rubrik Cloud Cluster to use."
+  type        = string
   default     = "Rubrik Cloud Cluster Nodes"
 }
 
@@ -66,6 +72,7 @@ variable "cloud_cluster_nodes_admin_cidr" {
 
 variable "aws_vpc_cloud_cluster_hosts_sg_name" {
   description = "The name of the security group to create for Rubrik Cloud Cluster to communicate with EC2 instances."
+  type        = string
   default     = "Rubrik Cloud Cluster Hosts"
 }
 
@@ -77,18 +84,21 @@ variable "aws_cloud_cluster_nodes_sg_ids" {
 
 variable "aws_subnet_id" {
   description = "The VPC Subnet ID to launch Rubrik Cloud Cluster in."
+  type        = string
 }
 
 # Storage Settings
 
 variable "cluster_disk_type" {
   description = "Disk type for the cache disk: gp2, gp3. Note gp3 only supported for CC-ES from Rubrik 8.1.1."
+  type        = string
   default     = "gp3"
 }
 
 variable "cluster_disk_size" {
   description = "The size (in GB) of each data disk on each node. Cloud Cluster ES only requires 1 512 GB disk per node."
-  default     = "512"
+  type        = number
+  default     = 512
 }
 
 variable "cluster_disk_count" {
@@ -143,10 +153,13 @@ variable "cluster_name" {
 
 variable "admin_email" {
   description = "The Rubrik Cloud Cluster sends messages for the admin account to this email address."
+  type        = string
 }
 
 variable "admin_password" {
   description = "Password for the Rubrik Cloud Cluster admin account."
+  type        = string
+  sensitive   = true
   default     = "ChangeMe"
 }
 
@@ -208,5 +221,6 @@ variable "ntp_server2_key_type" {
 }
 variable "timeout" {
   description = "The number of seconds to wait to establish a connection the Rubrik cluster before returning a timeout error."
+  type        = number
   default     = 15
 }
