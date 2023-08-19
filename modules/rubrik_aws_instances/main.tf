@@ -1,15 +1,3 @@
-resource "aws_ebs_volume" "ebs_block_device" {
-  for_each = var.disks
-  availability_zone = var.node_config.availability_zone
-  type = each.value.type
-  size = each.value.size
-  tags = merge(
-    {Name = each.key},
-    var.node_config.tags
-  )
-  encrypted   = true
-}
-
 resource "aws_instance" "rubrik_cluster" {
   for_each = var.node_names
   instance_type = var.node_config.instance_type
@@ -40,7 +28,7 @@ resource "aws_instance" "rubrik_cluster" {
       volume_size = ebs_block_device.value.size
       throughput  = ebs_block_device.value.throughput
       tags        =  merge(
-                          {Name = each.key},
+                          {Name = "${each.key}-${element(split("/", ebs_block_device.value.device), 2)}"},
                           var.node_config.tags      
       )
       device_name = ebs_block_device.value.device
