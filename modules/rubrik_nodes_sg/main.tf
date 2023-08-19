@@ -26,7 +26,7 @@ module "this" {
       protocol                 = "tcp"
       source_security_group_id = var.rubrik_hosts_sg_id 
     },
-    { description              = "SMB over TCP"
+    { description              = "Secure SMB over TCP"
       from_port                = 445
       to_port                  = 445
       protocol                 = "tcp"
