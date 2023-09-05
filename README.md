@@ -1,14 +1,12 @@
 # Terraform Module - AWS Cloud Cluster Deployment
 
-![AWS CodeBuild Status](https://codebuild.us-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiNzBMVFNxcThTQTlCVlVQN3IxRmNnbHRZZjFaaDdxR2dDWXV3SkY2M3hhZTh5WHVGbzhuVklQZzRQNkppZ1paVlREejFrUmFWV0U4VEduR2N5TzQ1YW04PSIsIml2UGFyYW1ldGVyU3BlYyI6IkZrd3VMRTV0a3c0MXdpY1ciLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
-
-Terraform module which deploys a new Rubrik Cloud Cluster in AWS.
+Terraform module which deploys a new Rubrik Cloud Cluster Elastic Storage (CCES) in AWS.
 
 ## Documentation
 
 Here are some resources to get you started! If you find any challenges from this project are not properly documented or are unclear, please [raise an issue](../../issues/new/choose) and let us know! This is a fun, safe environment - don't worry if you're a GitHub newbie!
 
-- [Terraform Module Registry](https://registry.terraform.io/modules/rubrikinc/rubrik-cloud-cluster)
+- [Terraform Module Registry](https://registry.terraform.io/modules/rubrikinc/rubrik-cloud-cluster-elastic-storage)
 - [Quick Start Guide](docs/quick-start.md)
 
 ## Prerequisites
@@ -17,7 +15,7 @@ There are a few services you'll need in order to get this project off the ground
 
 - [Terraform](https://www.terraform.io/downloads.html) v1.2.2 or greater
 - [Rubrik Provider for Terraform](https://github.com/rubrikinc/terraform-provider-rubrik) - provides Terraform functions for Rubrik
-  - Only required to run the sample Rubrik Bootstrap command
+  - Only required to use the `rubrik_bootstrap_cces_aws` resource.
 - The Rubik Cloud Cluster product in the AWS Marketplace must be subscribed to. Otherwise an error like this will be displayed:
   > Error: creating EC2 Instance: OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe. To do so please visit https://aws.amazon.com/marketplace/pp?sku=<sku_number>
 
