@@ -2,12 +2,13 @@
 # Dynamic Variable Creation #
 #############################
 locals {
-  cluster_node_names = formatlist("${var.cluster_name}-%02s", range(1, var.number_of_nodes + 1))
-  ami_id = var.aws_image_id == "" || var.aws_image_id == "latest" ? data.aws_ami_ids.rubrik_cloud_cluster.ids[0] : var.aws_image_id
-  sg_ids = var.aws_cloud_cluster_nodes_sg_ids == "" ? [module.rubrik_nodes_sg.security_group_id] : concat(var.aws_cloud_cluster_nodes_sg_ids, [module.rubrik_nodes_sg.security_group_id])
-  instance_type           = var.aws_instance_type
-  enableImmutability = var.enableImmutability ? 1 : 0
-  ebs_throughput = (var.cluster_disk_type == "gp3" ? 250 : null)   
+  cluster_node_names  = formatlist("${var.cluster_name}-%02s", range(1, var.number_of_nodes + 1))
+  ami_id              = var.aws_image_id == "" || var.aws_image_id == "latest" ? data.aws_ami_ids.rubrik_cloud_cluster.ids[0] : var.aws_image_id
+  sg_ids              = var.aws_cloud_cluster_nodes_sg_ids == "" ? [module.rubrik_nodes_sg.security_group_id] : concat(var.aws_cloud_cluster_nodes_sg_ids, [module.rubrik_nodes_sg.security_group_id])
+  instance_type       = var.aws_instance_type
+  enableImmutability  = var.enableImmutability ? 1 : 0
+  ebs_throughput      = (var.cluster_disk_type == "gp3" ? 250 : null)   
+  aws_key_pair_name   = var.aws_key_pair_name == "" ? module.aws_key_pair.key_pair_name : var.aws_key_pair_name
   cluster_node_config = {
     "instance_type"           = var.aws_instance_type,
     "ami_id"                  = local.ami_id,
@@ -85,10 +86,6 @@ module "aws_key_pair" {
   public_key      = tls_private_key.cc-key.public_key_openssh
 
   tags = var.aws_tags
-}
-
-locals {
-  aws_key_pair_name = var.aws_key_pair_name == "" ? module.aws_key_pair.key_pair_name : var.aws_key_pair_name
 }
 
 ######################################################################
