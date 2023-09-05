@@ -222,5 +222,5 @@ variable "ntp_server2_key_type" {
 variable "timeout" {
   description = "The number of seconds to wait to establish a connection the Rubrik cluster before returning a timeout error."
   type        = number
-  default     = 15
+  default     = 60
 }
