@@ -57,6 +57,7 @@ The following are the variables accepted by the module.
 | aws_ami_filter                                  | Cloud Cluster AWS AMI name pattern(s) to search for. Use [\"rubrik-mp-cc-<X>*\"]. Where <X> is the major version of CDM. |  list  |                            |   yes    |
 | aws_image_id                                    | AWS Image ID to deploy. Set to 'latest' or leave blank to deploy the latest version as determined by `aws_ami_filter`.   | string |           latest           |    no    |
 | aws_key_pair_name                               | Name for the AWS SSH Key-Pair being created or the existing AWS SSH Key-Pair being used.                                 | string |                            |    no    |
+| enable_imdsv2                                   | Enables IMDSv2 on the cluster node instances                                                                             | bool  |            false            |    no    |
 | private_key_recovery_window_in_days             | Recovery window in days to recover script generated ssh private key.                                                     | string |             30             |    no    |
 
 *Note: When using the `aws_tags` variable, the "Name" tag is automatically used by this TF for those resources that support it.*

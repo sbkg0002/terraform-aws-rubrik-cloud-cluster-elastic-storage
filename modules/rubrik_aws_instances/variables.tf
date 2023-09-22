@@ -15,6 +15,7 @@ variable "node_config" {
     root_volume_type = string
     root_volume_throughput = number
     tags = map(string)
+    http_tokens = string
   })
 }
 

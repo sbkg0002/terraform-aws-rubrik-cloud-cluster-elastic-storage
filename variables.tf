@@ -180,47 +180,67 @@ variable "ntp_server1_name" {
   type        = string
   default     = "8.8.8.8"
 }
+
 variable "ntp_server1_key_id" {
   description = "The ID number of the symmetric key used with NTP server #1. (Typically this is 0)"
   type        = number
   default     = 0
 }
+
 variable "ntp_server1_key" {
   description = "Symmetric key material for NTP server #1."
   type        = string
   sensitive   = true
   default     = ""
 }
+
 variable "ntp_server1_key_type" {
   description = "Symmetric key type for NTP server #1."
   type        = string
   sensitive   = true
   default     = ""
 }
+
 variable "ntp_server2_name" {
   description = "The FQDN or IPv4 addresses of network time protocol (NTP) server #2."
   type        = string
   default     = "8.8.4.4"
 }
+
 variable "ntp_server2_key_id" {
   description = "The ID number of the symmetric key used with NTP server #2. (Typically this is 0)"
   type        = number
   default     = 0
 }
+
 variable "ntp_server2_key" {
   description = "Symmetric key material for NTP server #2."
   type        = string
   sensitive   = true
   default     = ""
 }
+
 variable "ntp_server2_key_type" {
   description = "Symmetric key type for NTP server #2."
   type        = string
   sensitive   = true
   default     = ""
 }
+
 variable "timeout" {
   description = "The number of seconds to wait to establish a connection the Rubrik cluster before returning a timeout error."
   type        = number
   default     = 60
+}
+
+variable "enable_imdsv2" {
+  description = "Determines if IMDSv2 is enabled."
+  type        = bool
+  default     = false
+}
+
+variable "node_boot_wait" {
+  description = "Number of seconds to wait for nodes to boot."
+  type        = number
+  default     = 300
 }
