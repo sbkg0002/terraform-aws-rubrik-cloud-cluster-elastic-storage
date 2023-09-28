@@ -34,6 +34,7 @@ The following are the variables accepted by the module.
 | Name                                            | Description                                                                                                              |  Type  |          Default           | Required |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | :----: | :------------------------: | :------: |
 | aws_region                                      | The region to deploy Rubrik Cloud Cluster nodes.                                                                         | string |                            |   yes    |
+| aws_instance_imdsv2                             | Enable support for IMDSv2 instances. Only supported with CCES v8.1.3 or CCES v9.0 and higher.                            |  bool  |           false            |    no    |
 | aws_instance_type                               | The type of instance to use as Rubrik Cloud Cluster nodes. CC-ES requires m5.4xlarge.                                    | string |         m5.4xlarge         |    no    |
 | aws_disable_api_termination                     | If true, enables EC2 Instance Termination Protection on the Rubrik Cloud Cluster nodes.                                  |  bool  |            true            |    no    |
 | aws_tags                                        | Tags to add to the resources that this Terraform script creates, including the Rubrik cluster nodes.                     |  map   |                            |    no    |
@@ -106,6 +107,7 @@ The following are the variables accepted by the module.
 | ntp_server2_key                                 | Symmetric key material for NTP server #2. (Required with `ntp_server1_key_id` and `ntp_server1_key_type`)                | string |                            |    no    |
 | ntp_server2_key_type                            | Symmetric key type for NTP server #2. (Required with `ntp_server1_key` and `ntp_server1_key_id`)                         | string |                            |    no    |
 | timeout                                         | The number of seconds to wait to establish a connection the Rubrik cluster before returning a timeout error.             |  int   |             60             |    no    |
+| node_boot_wait                                  | Number of seconds to wait for CCES nodes to boot before attempting to bootstrap them.                                    |  int   |             300            |    no    |
 
 ## Running the Terraform Configuration
 
@@ -277,9 +279,9 @@ The Rubik product in the AWS Marketplace must be subscribed to. Otherwise an err
 If this occurs, open the specific link from the error, while logged into the AWS account where Cloud Cluster will be deployed. Follow the instructions for subscribing to the product.
 For AWS GovCloud the link points to the public marketplace. Instead of following the link, launch one instance of the major version of Rubrik from the AWS console. This will accept the terms and subscribe to the subscription. Remove the manually launched instance and then run the Terraform again.
 
-### Instance Metadata Service Version 2 (IMDSv2) not supported
+### Instance Metadata Service Version 2 (IMDSv2) not supported by CCES v8.1.2 and older
 
-The AWS Instance Metadata Service Version 2 (IMDSv2) is not supported at this time with CCES. If after deploying the CCES node, SSH fails to login or bootstrapping the node fails. When trying to ssh to the node the following error may occur:
+The AWS Instance Metadata Service Version 2 (IMDSv2) is not supported at this time with CCES v8.1.2 and older. This problem manifests itself after deploying the CCES node. SSH to the node fails to login and bootstrapping the node fails. When trying to ssh to the node the following error may occur:
 
 ```
 admin@<node_ip_address>: Permission denied (publickey).
@@ -332,4 +334,4 @@ Checking the bootstrap status using the REST API endpoint with a command such as
 }
 ```
 
-If any of these errors occur, the Instance Metadata Service Version 2 (IMDSv2) may be enabled. This can happen if the Terraform `aws_instance` module has the `metadata_options` variable `http_tokens` set to `required`. To fix this remove the `http_tokens` variable.
+If any of these errors occur, the Instance Metadata Service Version 2 (IMDSv2) may be enabled. This can happen if the option `aws_instance_imdsv2` is set to `true` in this module.  To fix this set the `aws_instance_imdsv2` variable to false or upgrade to CCES v8.1.3 and CCES v9.0 or higher.
