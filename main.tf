@@ -21,7 +21,7 @@ locals {
     "tags"                    = var.aws_tags
     "root_volume_type"        = var.cluster_disk_type
     "root_volume_throughput"  = local.ebs_throughput
-    "http_tokens"             = var.enable_imdsv2 ? "required" : "optional"
+    "http_tokens"             = var.aws_instance_imdsv2 ? "required" : "optional"
   }
 
   cluster_node_ips = [for i in module.cluster_nodes.instances : i.private_ip]

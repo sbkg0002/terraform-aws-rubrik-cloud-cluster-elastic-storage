@@ -4,6 +4,12 @@ variable "aws_region" {
   type        = string
 }
 
+variable "aws_instance_imdsv2" {
+  description = "Enable support for IMDSv2 instances. Only supported with CCES v8.1.3 or CCES v9.0 and higher."
+  type        = bool
+  default     = false
+}
+
 variable "aws_instance_type" {
   description = "The type of instance to use as Rubrik Cloud Cluster nodes. CC-ES requires m5.4xlarge."
   type        = string
@@ -233,14 +239,8 @@ variable "timeout" {
   default     = 60
 }
 
-variable "enable_imdsv2" {
-  description = "Determines if IMDSv2 is enabled."
-  type        = bool
-  default     = false
-}
-
 variable "node_boot_wait" {
-  description = "Number of seconds to wait for nodes to boot."
+  description = "Number of seconds to wait for CCES nodes to boot before attempting to bootstrap them."
   type        = number
   default     = 300
 }
