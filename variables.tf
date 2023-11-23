@@ -151,6 +151,18 @@ variable "s3_bucket_force_destroy" {
   default     = false
 }
 
+variable "create_s3_vpc_endpoint" {
+  description = "Determines whether an S3 VPC endpoint is created."
+  type        = bool
+  default     = true
+}
+
+variable "s3_vpc_endpoint_route_table_ids" {
+  description = "Route table IDs if S3 VPC endpoint is created."
+  type        = list(string)
+  default     = []
+}
+
 # Bootstrap Settings
 variable "cluster_name" {
   description = "Unique name to assign to the Rubrik Cloud Cluster. This will also be used to populate the EC2 instance name tag. For example, rubrik-cloud-cluster-1, rubrik-cloud-cluster-2 etc."
