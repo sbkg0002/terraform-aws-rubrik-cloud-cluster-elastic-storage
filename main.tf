@@ -25,18 +25,31 @@ locals {
   }
 
   cluster_node_ips = [for i in module.cluster_nodes.instances : i.private_ip]
-  cluster_disks = {
-    for v in setproduct(local.cluster_node_names, range(var.cluster_disk_count)) :
-    "${v[0]}-sd${substr("bcdefghi", v[1], 1)}" => {
-      "instance"   = v[0],
-      "device"     = "/dev/sd${substr("bcdefghi", v[1], 1)}"
-      "size"       = var.cluster_disk_size
-      "type"       = var.cluster_disk_type
-      "throughput" = local.ebs_throughput
-    }
-  }
-}
 
+  # Create 2 additional disks, one for metadata and for cache, per cluster node
+  # for CDM version 9.2.2 and later.
+  metadata_disk = {
+    device     = "/dev/sdb"
+    size       = 132
+    type       = "gp3"
+    throughput = 250
+  }
+  cache_disk = {
+    device     = "/dev/sdc"
+    size       = 206
+    type       = "gp3"
+    throughput = 250
+  }
+  cluster_disks = concat(
+    local.split_disk ? [local.metadata_disk, local.cache_disk] : [],
+    [for v in range(var.cluster_disk_count) : {
+      device     = "/dev/sd${substr(local.split_disk ? "defghi" : "bcdefghi", v, 1)}"
+      size       = var.cluster_disk_size
+      type       = var.cluster_disk_type
+      throughput = local.ebs_throughput
+    }]
+  )
+}
 
 data "aws_subnet" "rubrik_cloud_cluster" {
   id = var.aws_subnet_id
