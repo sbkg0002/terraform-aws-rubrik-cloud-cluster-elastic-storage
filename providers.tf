@@ -4,8 +4,9 @@ terraform {
     aws = {
       source = "hashicorp/aws"
     }
-    rubrik = {
-      source   = "rubrikinc/rubrik/rubrik"
+    polaris = {
+      source  = "rubrikinc/polaris"
+      version = "=0.8.0-beta.4"
     }
   }
 }
@@ -15,9 +16,4 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "rubrik" {
-#  node_ip  = "${module.cluster_nodes.instances.0.private_ip}"
-  node_ip  = local.cluster_node_ips.0
-  username = ""
-  password = ""
-}
+provider "polaris" {}
