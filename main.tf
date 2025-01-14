@@ -25,18 +25,31 @@ locals {
   }
 
   cluster_node_ips = [for i in module.cluster_nodes.instances : i.private_ip]
-  cluster_disks = {
-    for v in setproduct(local.cluster_node_names, range(var.cluster_disk_count)) :
-    "${v[0]}-sd${substr("bcdefghi", v[1], 1)}" => {
-      "instance"   = v[0],
-      "device"     = "/dev/sd${substr("bcdefghi", v[1], 1)}"
-      "size"       = var.cluster_disk_size
-      "type"       = var.cluster_disk_type
-      "throughput" = local.ebs_throughput
-    }
-  }
-}
 
+  # Create 2 additional disks, one for metadata and for cache, per cluster node
+  # for CDM version 9.2.2 and later.
+  metadata_disk = {
+    device     = "/dev/sdb"
+    size       = 132
+    type       = "gp3"
+    throughput = 250
+  }
+  cache_disk = {
+    device     = "/dev/sdc"
+    size       = 206
+    type       = "gp3"
+    throughput = 250
+  }
+  cluster_disks = concat(
+    local.split_disk ? [local.metadata_disk, local.cache_disk] : [],
+    [for v in range(var.cluster_disk_count) : {
+      device     = "/dev/sd${substr(local.split_disk ? "defghi" : "bcdefghi", v, 1)}"
+      size       = var.cluster_disk_size
+      type       = var.cluster_disk_type
+      throughput = local.ebs_throughput
+    }]
+  )
+}
 
 data "aws_subnet" "rubrik_cloud_cluster" {
   id = var.aws_subnet_id
@@ -230,23 +243,19 @@ resource "time_sleep" "wait_for_nodes_to_boot" {
   depends_on = [module.cluster_nodes]
 }
 
-resource "rubrik_bootstrap_cces_aws" "bootstrap_rubrik_cces_aws" {
-  cluster_name            = "${var.cluster_name}"
-  admin_email             = "${var.admin_email}"
-  admin_password          = "${var.admin_password}"
-  management_gateway      = "${cidrhost(data.aws_subnet.rubrik_cloud_cluster.cidr_block, 1)}"
-  management_subnet_mask  = "${cidrnetmask(data.aws_subnet.rubrik_cloud_cluster.cidr_block)}"
-  dns_search_domain       = "${var.dns_search_domain}"
-  dns_name_servers        = "${var.dns_name_servers}"
-  ntp_server1_name        = "${var.ntp_server1_name}"
-  ntp_server2_name        = "${var.ntp_server2_name}"
-
-  enable_encryption       = false
-  bucket_name             = var.s3_bucket_name == "" ? "${var.cluster_name}.bucket-do-not-delete" : var.s3_bucket_name
-  enable_immutability     = var.enableImmutability
-
-  node_config             = "${zipmap(local.cluster_node_names, local.cluster_node_ips)}"
-  timeout                 = "${var.timeout}"
-
-  depends_on              = [time_sleep.wait_for_nodes_to_boot]
+resource "polaris_cdm_bootstrap_cces_aws" "bootstrap_cces_aws" {
+  cluster_name           = var.cluster_name
+  cluster_nodes          = zipmap(local.cluster_node_names, local.cluster_node_ips)
+  admin_email            = var.admin_email
+  admin_password         = var.admin_password
+  management_gateway     = cidrhost(data.aws_subnet.rubrik_cloud_cluster.cidr_block, 1)
+  management_subnet_mask = cidrnetmask(data.aws_subnet.rubrik_cloud_cluster.cidr_block)
+  dns_search_domain      = var.dns_search_domain
+  dns_name_servers       = var.dns_name_servers
+  ntp_server1_name       = var.ntp_server1_name
+  ntp_server2_name       = var.ntp_server2_name
+  bucket_name            = var.s3_bucket_name == "" ? "${var.cluster_name}.bucket-do-not-delete" : var.s3_bucket_name
+  enable_immutability    = var.enableImmutability
+  timeout                = var.timeout
+  depends_on             = [time_sleep.wait_for_nodes_to_boot]
 }

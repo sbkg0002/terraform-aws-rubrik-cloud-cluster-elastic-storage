@@ -14,9 +14,9 @@ Here are some resources to get you started! If you find any challenges from this
 There are a few services you'll need in order to get this project off the ground:
 
 - [Terraform](https://www.terraform.io/downloads.html) v1.2.2 or greater
-- [Rubrik Provider for Terraform](https://github.com/rubrikinc/terraform-provider-rubrik) - provides Terraform functions for Rubrik
-  - Only required to use the `rubrik_bootstrap_cces_aws` resource.
-- The Rubik Cloud Cluster product in the AWS Marketplace must be subscribed to. Otherwise an error like this will be displayed:
+- [Rubrik RSC Provider for Terraform](https://github.com/rubrikinc/terraform-provider-polaris) - provides Terraform functions for Rubrik
+  - Only required to use the `polaris_cdm_bootstrap_cces_aws` resource.
+- The Rubik Cloud Cluster product in the AWS Marketplace must be subscribed to. Otherwise, an error like this will be displayed:
   > Error: creating EC2 Instance: OptInRequired: In order to use this AWS Marketplace product you need to accept terms and subscribe. To do so please visit https://aws.amazon.com/marketplace/pp?sku=<sku_number>
 
     If this occurs, open the specific link from the error, while logged into the AWS account where Cloud Cluster will be deployed. Follow the instructions for subscribing to the product.
@@ -34,7 +34,7 @@ module "rubrik_aws_cloud_cluster" {
   admin_email                = "build@rubrik.com"
   admin_password              = "RubrikGoForward"
   dns_search_domain          = ["rubrikdemo.com"]
-  dns_name_servers           = ["192.168.100.5"."192.168.100.6"]
+  dns_name_servers           = ["192.168.100.5","192.168.100.6"]
   ntp_server1_name            = "8.8.8.8"
   ntp_server2_name            = "8.8.4.4"
 }

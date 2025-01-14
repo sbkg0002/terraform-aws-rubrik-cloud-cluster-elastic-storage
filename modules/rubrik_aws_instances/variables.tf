@@ -20,5 +20,10 @@ variable "node_config" {
 }
 
 variable "disks" {
-  type = map(any)
+  type = list(object({
+    device     = string
+    size       = number
+    type       = string
+    throughput = number
+  }))
 }
