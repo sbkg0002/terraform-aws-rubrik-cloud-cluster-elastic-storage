@@ -237,7 +237,7 @@ module "cluster_nodes" {
 
 ######################################
 # Bootstrap the Rubrik Cloud Cluster #
-###########################k###########
+######################################
 
 resource "time_sleep" "wait_for_nodes_to_boot" {
   create_duration = "${var.node_boot_wait}s"
@@ -260,4 +260,16 @@ resource "polaris_cdm_bootstrap_cces_aws" "bootstrap_cces_aws" {
   enable_immutability    = var.enableImmutability
   timeout                = var.timeout
   depends_on             = [time_sleep.wait_for_nodes_to_boot]
+}
+
+##############################################
+# Register the Rubrik Cloud Cluster with RSC #
+###########################k##################
+
+resource "polaris_cdm_registration" "cces_aws_registration" {
+  count                   = var.register_cluster_with_rsc ? 1 : 0
+  admin_password          = var.admin_password
+  cluster_name            = var.cluster_name
+  cluster_node_ip_address = local.cluster_node_ips[0]
+  depends_on              = [polaris_cdm_bootstrap_cces_aws.bootstrap_cces_aws]
 }

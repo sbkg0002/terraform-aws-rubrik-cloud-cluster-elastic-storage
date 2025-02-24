@@ -1,4 +1,5 @@
 # Instance/Node Settings
+
 variable "aws_region" {
   description = "The region to deploy Rubrik Cloud Cluster nodes."
   type        = string
@@ -64,6 +65,7 @@ variable "private_key_recovery_window_in_days" {
 }
 
 # Network Settings
+
 variable "aws_vpc_cloud_cluster_nodes_sg_name" {
   description = "The name of the security group to create for Rubrik Cloud Cluster to use."
   type        = string
@@ -164,6 +166,7 @@ variable "s3_vpc_endpoint_route_table_ids" {
 }
 
 # Bootstrap Settings
+
 variable "cluster_name" {
   description = "Unique name to assign to the Rubrik Cloud Cluster. This will also be used to populate the EC2 instance name tag. For example, rubrik-cloud-cluster-1, rubrik-cloud-cluster-2 etc."
   default     = "rubrik-cloud-cluster"
@@ -255,4 +258,10 @@ variable "node_boot_wait" {
   description = "Number of seconds to wait for CCES nodes to boot before attempting to bootstrap them."
   type        = number
   default     = 300
+}
+
+variable "register_cluster_with_rsc" {
+  description = "Register the Rubrik Cloud Cluster with Rubrik Security Cloud."
+  type        = bool
+  default     = false
 }
