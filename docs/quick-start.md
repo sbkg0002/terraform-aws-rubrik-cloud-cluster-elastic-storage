@@ -69,45 +69,47 @@ The following are the variables accepted by the module.
 
 ### Cache Disk Storage Settings
 
-| Name                                            | Description                                                                                                              |  Type  |          Default           | Required |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | :----: | :------------------------: | :------: |
-| cluster_disk_type                               | Disk type for the data disks (gp2).                                                                                      | string |            gp2             |    no    |
-| cluster_disk_size                               | The size (in GB) of each data disk on each node. Cloud Cluster ES only requires 1 512 GB disk per node.                  | string |            512             |    no    |
-| cluster_disk_count                              | The number of disks for each node in the cluster. Set to 1 for Cloud Cluster ES.                  |  int   |             1              |    no    |
+| Name                                            | Description                                                                                             |  Type  |          Default           | Required |
+| ----------------------------------------------- |---------------------------------------------------------------------------------------------------------| :----: | :------------------------: | :------: |
+| cluster_disk_type                               | Disk type for the data disks (gp2).                                                                     | string |            gp2             |    no    |
+| cluster_disk_size                               | The size (in GB) of each data disk on each node. Cloud Cluster ES only requires 1 512 GB disk per node. | string |            512             |    no    |
+| cluster_disk_count                              | The number of disks for each node in the cluster. Set to 1 for Cloud Cluster ES.                        |  int   |             1              |    no    |
 
 ### Cloud Cluster ES Settings
 
-| Name                                            | Description                                                                                                              |  Type  |          Default           | Required |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | :----: | :------------------------: | :------: |
-| create_iam_role                                 | If true, create required IAM role, role policy, and instance profile needed for Cloud Cluster ES.                        |  bool  |           true             |    no    |
-| aws_cloud_cluster_iam_role_name                 | AWS IAM Role name for Cloud Cluster ES. If blank a name will be auto generated. Required if create_iam_role is false.    | string |                            |    no    |
-| aws_cloud_cluster_iam_role_policy_name          | AWS IAM Role policy name for Cloud Cluster ES if create_iam_role is true. If blank a name will be auto generated.        | string |                            |    no    |
-| aws_cloud_cluster_ec2_instance_profile_name     | AWS EC2 Instance Profile name that links the IAM Role to Cloud Cluster ES. If blank a name will be auto generated.       | string |                            |    no    |
-| create_s3_bucket                                | If true, create am S3 bucket for Cloud Cluster ES data storage.                                                          |  bool  |           true             |    no    |
-| s3_bucket_name                                  | Name of the S3 bucket to use with Cloud Cluster ES data storage. If blank a name will be auto generated.                 | string |                            |    no    |
-| s3_bucket_force_destroy                         | Indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error.               |  bool  |           false            |    no    |
-| enable_immutability                             | Enable immutability on the S3 objects that CCES uses. Default value is true.                                            |  bool  |           true            |    no    |
-| create_s3_vpc_endpoint                          | If true, create a VPC Endpoint and S3 Endpoint Service for Cloud Cluster ES.                                             |  bool  |           true             |    no    |
+| Name                                            | Description                                                                                                           |  Type  | Default | Required |
+|-------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------| :----: |:-------:| :------: |
+| create_iam_role                                 | If true, create required IAM role, role policy, and instance profile needed for Cloud Cluster ES.                     |  bool  |  true   |    no    |
+| aws_cloud_cluster_iam_role_name                 | AWS IAM Role name for Cloud Cluster ES. If blank a name will be auto generated. Required if create_iam_role is false. | string |         |    no    |
+| aws_cloud_cluster_iam_role_policy_name          | AWS IAM Role policy name for Cloud Cluster ES if create_iam_role is true. If blank a name will be auto generated.     | string |         |    no    |
+| aws_cloud_cluster_ec2_instance_profile_name     | AWS EC2 Instance Profile name that links the IAM Role to Cloud Cluster ES. If blank a name will be auto generated.    | string |         |    no    |
+| create_s3_bucket                                | If true, create am S3 bucket for Cloud Cluster ES data storage.                                                       |  bool  |  true   |    no    |
+| s3_bucket_name                                  | Name of the S3 bucket to use with Cloud Cluster ES data storage. If blank a name will be auto generated.              | string |         |    no    |
+| s3_bucket_force_destroy                         | Indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error.            |  bool  |  false  |    no    |
+| enableImmutability                              | Enable immutability on the S3 objects that CCES uses. Default value is true.                                          |  bool  |  true   |    no    |
+| create_s3_vpc_endpoint                          | If true, create a VPC Endpoint and S3 Endpoint Service for Cloud Cluster ES.                                          |  bool  |  true   |    no    |
+| s3_vpc_endpoint_route_table_ids                 | Route table IDs for VPC Endpoint and S3 Endpoint Service.                                                             |  list  |         |    no    |
 
 ### Bootstrap Settings
 
-| Name                                            | Description                                                                                                              |  Type  |          Default           | Required |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | :----: | :------------------------: | :------: |
-| cluster_name                                    | Unique name to assign to Rubrik Cloud Cluster. Also used for EC2 instance name tag. For example, rubrik-1, rubrik-2 etc. | string |                            |   yes    |
-| admin_email                                     | The Rubrik Cloud Cluster sends messages for the admin account to this email address.                                     | string |                            |   yes    |
-| admin_password                                  | Password for the Rubrik Cloud Cluster admin account.                                                                     | string |      RubrikGoForward       |    no    |
-| dns_search_domain                               | List of search domains that the DNS Service will use to resolve hostnames that are not fully qualified.                  |  list  |                            |   yes    |
-| dns_name_servers                                | List of the IPv4 addresses of the DNS servers.                                                                           |  list  |    ["169.254.169.253"]     |    no    |
-| ntp_server1_name                                | The FQDN or IPv4 addresses of network time protocol (NTP) server #1.                                                     | string |          8.8.8.8           |   yes    |
-| ntp_server1_key_id                              | The ID # of the key for NTP server #1. Typically is set to 0. (Required with `ntp_server1_key` & `ntp_server1_key_type`) |  int   |             0              |    no    |
-| ntp_server1_key                                 | Symmetric key material for NTP server #1. (Required with `ntp_server1_key_id` and `ntp_server1_key_type`)                | string |                            |    no    |
-| ntp_server1_key_type                            | Symmetric key type for NTP server #1. (Required with `ntp_server1_key` and `ntp_server1_key_id`)                         | string |                            |    no    |
-| ntp_server2_name                                | The FQDN or IPv4 addresses of network time protocol (NTP) server #2.                                                     | string |          8.8.4.4           |   yes    |
-| ntp_server2_key_id                              | The ID # of the key for NTP server #2. Typically is set to 1. (Required with `ntp_server1_key` & `ntp_server1_key_type`) |  int   |             1              |    no    |
-| ntp_server2_key                                 | Symmetric key material for NTP server #2. (Required with `ntp_server1_key_id` and `ntp_server1_key_type`)                | string |                            |    no    |
-| ntp_server2_key_type                            | Symmetric key type for NTP server #2. (Required with `ntp_server1_key` and `ntp_server1_key_id`)                         | string |                            |    no    |
-| timeout                                         | The number of seconds to wait to establish a connection the Rubrik cluster before returning a timeout error.             |  int   |             60             |    no    |
-| node_boot_wait                                  | Number of seconds to wait for CCES nodes to boot before attempting to bootstrap them.                                    |  int   |             300            |    no    |
+| Name                                            | Description                                                                                                              |  Type  |       Default       | Required |
+| ----------------------------------------------- |--------------------------------------------------------------------------------------------------------------------------|:------:|:-------------------:|:--------:|
+| cluster_name                                    | Unique name to assign to Rubrik Cloud Cluster. Also used for EC2 instance name tag. For example, rubrik-1, rubrik-2 etc. | string |                     |   yes    |
+| admin_email                                     | The Rubrik Cloud Cluster sends messages for the admin account to this email address.                                     | string |                     |   yes    |
+| admin_password                                  | Password for the Rubrik Cloud Cluster admin account.                                                                     | string |   RubrikGoForward   |    no    |
+| dns_search_domain                               | List of search domains that the DNS Service will use to resolve hostnames that are not fully qualified.                  |  list  |                     |   yes    |
+| dns_name_servers                                | List of the IPv4 addresses of the DNS servers.                                                                           |  list  | ["169.254.169.253"] |    no    |
+| ntp_server1_name                                | The FQDN or IPv4 addresses of network time protocol (NTP) server #1.                                                     | string |       8.8.8.8       |   yes    |
+| ntp_server1_key_id                              | The ID # of the key for NTP server #1. Typically is set to 0. (Required with `ntp_server1_key` & `ntp_server1_key_type`) |  int   |          0          |    no    |
+| ntp_server1_key                                 | Symmetric key material for NTP server #1. (Required with `ntp_server1_key_id` and `ntp_server1_key_type`)                | string |                     |    no    |
+| ntp_server1_key_type                            | Symmetric key type for NTP server #1. (Required with `ntp_server1_key` and `ntp_server1_key_id`)                         | string |                     |    no    |
+| ntp_server2_name                                | The FQDN or IPv4 addresses of network time protocol (NTP) server #2.                                                     | string |       8.8.4.4       |   yes    |
+| ntp_server2_key_id                              | The ID # of the key for NTP server #2. Typically is set to 1. (Required with `ntp_server1_key` & `ntp_server1_key_type`) |  int   |          1          |    no    |
+| ntp_server2_key                                 | Symmetric key material for NTP server #2. (Required with `ntp_server1_key_id` and `ntp_server1_key_type`)                | string |                     |    no    |
+| ntp_server2_key_type                            | Symmetric key type for NTP server #2. (Required with `ntp_server1_key` and `ntp_server1_key_id`)                         | string |                     |    no    |
+| timeout                                         | The number of seconds to wait to establish a connection the Rubrik cluster before returning a timeout error.             |  int   |         60          |    no    |
+| node_boot_wait                                  | Number of seconds to wait for CCES nodes to boot before attempting to bootstrap them.                                    |  int   |         300         |    no    |
+| register_cluster_with_rsc                       | Register the Rubrik Cloud Cluster with Rubrik Security Cloud. Default value is false.                                    |  bool  |        false        |    no    |
 
 ## Running the Terraform Configuration
 
