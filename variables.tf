@@ -98,7 +98,7 @@ variable "aws_subnet_id" {
 # Storage Settings
 
 variable "cluster_disk_type" {
-  description = "Disk type for the cache disk: gp2, gp3. Note gp3 only supported for CC-ES from Rubrik 8.1.1."
+  description = "Disk type for the data disk: gp2 or gp3. Note, gp3 is only supported from version 8.1.1 for Cloud Cluster ES."
   type        = string
   default     = "gp3"
 }

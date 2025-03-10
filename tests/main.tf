@@ -4,8 +4,6 @@ variable "aws_vpc_security_group_ids" {
   type = "list"
 }
 
-variable "aws_subnet_id" {}
-
 module "rubrik_aws_cloud_cluster_elastic_storage" {
   source = "../"
 
