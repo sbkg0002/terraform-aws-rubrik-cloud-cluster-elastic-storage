@@ -20,7 +20,7 @@ locals {
     "availability_zone"       = data.aws_subnet.rubrik_cloud_cluster.availability_zone,
     "tags"                    = var.aws_tags
     "root_volume_type"        = var.cluster_disk_type
-    "root_volume_throughput"  = local.ebs_throughput
+    "root_volume_throughput"  = local.split_disk ? 125 : local.ebs_throughput
     "http_tokens"             = var.aws_instance_imdsv2 ? "required" : "optional"
   }
 
@@ -32,13 +32,13 @@ locals {
     device     = "/dev/sdb"
     size       = 132
     type       = "gp3"
-    throughput = 250
+    throughput = 125
   }
   cache_disk = {
     device     = "/dev/sdc"
     size       = 206
     type       = "gp3"
-    throughput = 250
+    throughput = 125
   }
   cluster_disks = concat(
     local.split_disk ? [local.metadata_disk, local.cache_disk] : [],
