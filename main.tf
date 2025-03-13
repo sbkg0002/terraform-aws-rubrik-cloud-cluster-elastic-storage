@@ -2,13 +2,13 @@
 # Dynamic Variable Creation #
 #############################
 locals {
-  cluster_node_names  = formatlist("${var.cluster_name}-%02s", range(1, var.number_of_nodes + 1))
-  ami_id              = var.aws_image_id == "" || var.aws_image_id == "latest" ? data.aws_ami_ids.rubrik_cloud_cluster.ids[0] : var.aws_image_id
-  sg_ids              = var.aws_cloud_cluster_nodes_sg_ids == "" ? [module.rubrik_nodes_sg.security_group_id] : concat(var.aws_cloud_cluster_nodes_sg_ids, [module.rubrik_nodes_sg.security_group_id])
-  instance_type       = var.aws_instance_type
-  enableImmutability  = var.enableImmutability ? 1 : 0
-  ebs_throughput      = (var.cluster_disk_type == "gp3" ? 250 : null)   
-  aws_key_pair_name   = var.aws_key_pair_name == "" ? module.aws_key_pair.key_pair_name : var.aws_key_pair_name
+  cluster_node_names = formatlist("${var.cluster_name}-%02s", range(1, var.number_of_nodes + 1))
+  ami_id             = var.aws_image_id == "" || var.aws_image_id == "latest" ? data.aws_ami_ids.rubrik_cloud_cluster.ids[0] : var.aws_image_id
+  sg_ids             = var.aws_cloud_cluster_nodes_sg_ids == "" ? [module.rubrik_nodes_sg.security_group_id] : concat(var.aws_cloud_cluster_nodes_sg_ids, [module.rubrik_nodes_sg.security_group_id])
+  instance_type      = var.aws_instance_type
+  enableImmutability = var.enableImmutability ? 1 : 0
+  ebs_throughput     = (var.cluster_disk_type == "gp3" ? 250 : null)
+  aws_key_pair_name  = var.aws_key_pair_name == "" ? module.aws_key_pair.key_pair_name : var.aws_key_pair_name
   cluster_node_config = {
     "instance_type"           = var.aws_instance_type,
     "ami_id"                  = local.ami_id,
@@ -93,11 +93,11 @@ resource "aws_secretsmanager_secret_version" "cces-private-key-value" {
 
 # Create SSH Key
 module "aws_key_pair" {
-  source          = "terraform-aws-modules/key-pair/aws"
-  version         = "~> 2.0.0"
+  source  = "terraform-aws-modules/key-pair/aws"
+  version = "~> 2.0.0"
 
-  key_name        = var.aws_key_pair_name == "" ? "${var.cluster_name}.key-pair" : var.aws_key_pair_name
-  public_key      = tls_private_key.cc-key.public_key_openssh
+  key_name   = var.aws_key_pair_name == "" ? "${var.cluster_name}.key-pair" : var.aws_key_pair_name
+  public_key = tls_private_key.cc-key.public_key_openssh
 
   tags = var.aws_tags
 }
@@ -112,14 +112,14 @@ module "rubrik_nodes_sg" {
   name            = var.aws_vpc_cloud_cluster_nodes_sg_name == "" ? "${var.cluster_name}.sg" : var.aws_vpc_cloud_cluster_nodes_sg_name
   description     = "Allow hosts to talk to Rubrik Cloud Cluster and Cluster to talk to itself"
   vpc_id          = data.aws_subnet.rubrik_cloud_cluster.vpc_id
-  tags = var.aws_tags
+  tags            = var.aws_tags
 }
 
 module "rubrik_nodes_sg_rules" {
-  source                          = "./modules/rubrik_nodes_sg"
-  sg_id                           = module.rubrik_nodes_sg.security_group_id
-  rubrik_hosts_sg_id              = module.rubrik_hosts_sg.security_group_id
-  cloud_cluster_nodes_admin_cidr  = var.cloud_cluster_nodes_admin_cidr 
+  source                         = "./modules/rubrik_nodes_sg"
+  sg_id                          = module.rubrik_nodes_sg.security_group_id
+  rubrik_hosts_sg_id             = module.rubrik_hosts_sg.security_group_id
+  cloud_cluster_nodes_admin_cidr = var.cloud_cluster_nodes_admin_cidr
   tags = merge(
     { name = "${var.cluster_name}:sg-rule" },
     var.aws_tags
@@ -136,7 +136,7 @@ module "rubrik_hosts_sg" {
   name            = var.aws_vpc_cloud_cluster_hosts_sg_name == "" ? "${var.cluster_name}.sg" : var.aws_vpc_cloud_cluster_hosts_sg_name
   description     = "Allow Rubrik Cloud Cluster to talk to hosts, and hosts with this security group can talk to cluster"
   vpc_id          = data.aws_subnet.rubrik_cloud_cluster.vpc_id
-  tags = var.aws_tags
+  tags            = var.aws_tags
 }
 
 module "rubrik_hosts_sg_rules" {
@@ -164,6 +164,8 @@ module "iam_role" {
   role_policy_name      = var.aws_cloud_cluster_iam_role_policy_name == "" ? "${var.cluster_name}.role-policy" : var.aws_cloud_cluster_iam_role_policy_name
   instance_profile_name = var.aws_cloud_cluster_ec2_instance_profile_name == "" ? "${var.cluster_name}.instance-profile" : var.aws_cloud_cluster_ec2_instance_profile_name
   enableImmutability    = var.enableImmutability
+  path                  = var.role_path
+  permissions_boundary  = var.role_permissions_boundary
 }
 
 ########################################
@@ -195,8 +197,8 @@ resource "aws_s3_bucket" "cces-s3-bucket" {
 }
 
 resource "aws_s3_bucket_versioning" "cces-s3-bucket-versioning" {
-  count   = local.enableImmutability
-  bucket  = aws_s3_bucket.cces-s3-bucket.id
+  count  = local.enableImmutability
+  bucket = aws_s3_bucket.cces-s3-bucket.id
   versioning_configuration {
     status = "Enabled"
   }
@@ -217,9 +219,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cces-s3-bucket-en
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm = "AES256"
     }
-    bucket_key_enabled  = true
+    bucket_key_enabled = true
   }
 }
 
@@ -230,9 +232,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cces-s3-bucket-en
 module "cluster_nodes" {
   source = "./modules/rubrik_aws_instances"
 
-  node_names    = local.cluster_node_names
-  node_config   = local.cluster_node_config
-  disks         = local.cluster_disks
+  node_names  = local.cluster_node_names
+  node_config = local.cluster_node_config
+  disks       = local.cluster_disks
 }
 
 ######################################
