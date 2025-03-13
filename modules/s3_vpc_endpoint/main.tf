@@ -10,8 +10,8 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
 }
 
 data "aws_vpc_endpoint" "this" {
-  vpc_id       = var.vpc_id
-  id           = aws_vpc_endpoint.s3_endpoint.id
+  vpc_id = var.vpc_id
+  id     = aws_vpc_endpoint.s3_endpoint.id
   depends_on = [
     aws_vpc_endpoint.s3_endpoint
   ]

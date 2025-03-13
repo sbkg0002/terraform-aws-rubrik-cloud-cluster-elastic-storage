@@ -3,7 +3,7 @@ module "this" {
 
   create_sg         = false
   security_group_id = var.sg_id
-  create = var.create
+  create            = var.create
 
   ingress_with_self = [{ rule = "all-all" }]
   egress_rules      = ["all-all"]
@@ -12,19 +12,19 @@ module "this" {
       from_port                = 443
       to_port                  = 443
       protocol                 = "tcp"
-      source_security_group_id = var.rubrik_hosts_sg_id 
+      source_security_group_id = var.rubrik_hosts_sg_id
     },
     { description              = "SSH over TCP"
       from_port                = 22
       to_port                  = 22
       protocol                 = "tcp"
-      source_security_group_id = var.rubrik_hosts_sg_id 
+      source_security_group_id = var.rubrik_hosts_sg_id
     },
     { description              = "NFS over TCP"
       from_port                = 2049
       to_port                  = 2049
       protocol                 = "tcp"
-      source_security_group_id = var.rubrik_hosts_sg_id 
+      source_security_group_id = var.rubrik_hosts_sg_id
     },
     { description              = "Secure SMB over TCP"
       from_port                = 445
@@ -51,14 +51,14 @@ module "this" {
       to_port     = 443
       protocol    = "tcp"
       description = "Admin port for web service"
-      cidr_blocks = var.cloud_cluster_nodes_admin_cidr 
+      cidr_blocks = var.cloud_cluster_nodes_admin_cidr
     },
     {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
       description = "Admin port for ssh"
-      cidr_blocks = var.cloud_cluster_nodes_admin_cidr 
+      cidr_blocks = var.cloud_cluster_nodes_admin_cidr
     }
   ]
 

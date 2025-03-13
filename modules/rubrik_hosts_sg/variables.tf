@@ -9,7 +9,7 @@ variable "create" {
 
 variable "tags" {
   type    = map(string)
-  default = { }
+  default = {}
 }
 
 variable "rubrik_nodes_sg_id" {

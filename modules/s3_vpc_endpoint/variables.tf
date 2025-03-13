@@ -13,6 +13,6 @@ variable "tags" {
 }
 
 variable "endpoint_name" {
-  type = string
+  type    = string
   default = null
 }
